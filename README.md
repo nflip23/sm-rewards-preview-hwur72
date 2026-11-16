@@ -1,9 +1,8 @@
 Example data preview. This is unlisted sample/example data only.
 
-Shareable preview (jsDelivr, works without GitHub Pages):
-https://cdn.jsdelivr.net/gh/nflip23/sm-rewards-preview-hwur72@main/index.html
+Shareable preview:
+https://htmlpreview.github.io/?https://github.com/nflip23/sm-rewards-preview-hwur72/blob/main/index.html
 
-GitHub Pages, if you enable it under Settings → Pages → Source: GitHub Actions:
-https://nflip23.github.io/sm-rewards-preview-hwur72/
+GitHub Pages is not enabled yet. To use https://nflip23.github.io/sm-rewards-preview-hwur72/ open the repo Settings → Pages → Source: GitHub Actions, then re-run the pages workflow.
 
-To take this down: delete this repository (Settings → Danger zone → Delete this repository). That also disables the Pages URL. jsDelivr may keep a cached copy for a short time after deletion.
+To take this down: delete this repository (Settings → Danger zone → Delete this repository). That also disables the Pages URL and the preview above once the file is gone.
