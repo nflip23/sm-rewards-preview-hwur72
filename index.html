@@ -488,42 +488,83 @@ html,body{background:#050814}
 }
 .lb-bar .lb-inset{margin-top:5px;padding:4px 10px}
 
-/* Replace the per-card sheen stripe with one soft glow across the row */
+/* One continuous diagonal light sweep across Gold, Platinum, Diamond.
+   15s loop: 1s delay, 3s travel, 12s rest until the next sweep. */
 .app .rung .tier-shine{display:none !important;animation:none !important}
+@property --sx{
+  syntax:'<length>';
+  inherits:true;
+  initial-value:-320px;
+}
+.tiers{--sx:-320px;animation:tier-sweep-x 15s linear infinite}
+@keyframes tier-sweep-x{
+  0%,6.666%{--sx:-320px}
+  26.666%,100%{--sx:1520px}
+}
+@keyframes tier-sweep-fade{
+  0%,6.666%{opacity:0}
+  8.5%{opacity:1}
+  24.5%{opacity:1}
+  26.666%,100%{opacity:0}
+}
+
+/* Faint shared band so the light continues across the 14px gaps */
 .tier-glow{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
 .tg-mover{
-  position:absolute;top:-14%;height:128%;width:300px;left:-300px;
-  pointer-events:none;will-change:left,opacity
+  position:absolute;top:-22%;height:144%;width:380px;left:var(--sx);
+  pointer-events:none;transform:skewX(-20deg);transform-origin:center center;
+  animation:tier-sweep-fade 15s linear infinite;will-change:left,opacity
 }
-.tg-mover i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;pointer-events:none}
-.tg-bloom{
-  inset:-8% -24%;
-  background:radial-gradient(ellipse 55% 70% at 50% 50%,rgba(255,236,200,.32),rgba(180,214,255,.14) 44%,transparent 74%);
-  filter:blur(30px)
+.tg-mover i{position:absolute;display:block;pointer-events:none;border-radius:0}
+.tg-lift{
+  inset:0 -8%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.05) 28%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.05) 72%,transparent 100%);
+  filter:blur(16px);mix-blend-mode:soft-light
 }
 .tg-band{
-  inset:10% 14%;
-  background:radial-gradient(ellipse 50% 62% at 50% 50%,rgba(255,255,255,.36),rgba(255,228,176,.2) 38%,rgba(160,204,255,.1) 60%,transparent 76%);
-  filter:blur(18px)
+  inset:0 10%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 24%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.05) 76%,transparent 100%);
+  filter:blur(10px);mix-blend-mode:overlay
 }
-.tg-core{
-  inset:24% 30%;
-  background:radial-gradient(ellipse 46% 54% at 50% 50%,rgba(255,255,255,.5),rgba(255,240,210,.18) 42%,transparent 70%);
-  filter:blur(11px)
+.tg-spec{
+  inset:10% 40%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.22) 40%,rgba(255,255,255,.4) 50%,rgba(255,255,255,.16) 62%,transparent 100%);
+  filter:blur(5px);mix-blend-mode:overlay
 }
-.tg-mover{animation:tier-glow-travel 12s infinite,tier-glow-fade 12s infinite}
-@keyframes tier-glow-travel{
-  0%,10%{left:-300px;animation-timing-function:cubic-bezier(.42,0,.2,1)}
-  18%{left:20px;animation-timing-function:linear}
-  80%{left:calc(100% - 340px);animation-timing-function:cubic-bezier(.4,0,.2,1)}
-  88%,100%{left:calc(100% + 40px)}
+
+/* Per-card clipped, tinted copy of the same sweep (shared --sx) */
+.rung.done{--ox:0px}
+.rung.here{--ox:398.7px}
+.rung.next{--ox:951.3px}
+.rung .tier-sweep{
+  position:absolute;inset:0;border-radius:inherit;overflow:hidden;
+  pointer-events:none;z-index:4;
+  animation:tier-sweep-fade 15s linear infinite
 }
-@keyframes tier-glow-fade{
-  0%,10%{opacity:0}
-  16%{opacity:1}
-  80%{opacity:1}
-  88%,100%{opacity:0}
+.rung .tier-sweep b{
+  position:absolute;top:-25%;height:150%;width:380px;
+  left:calc(var(--sx) - var(--ox));
+  display:block;pointer-events:none;border-radius:0;
+  transform:skewX(-20deg);transform-origin:center center
 }
+.rung .tier-sweep .ts-lift{filter:blur(14px);mix-blend-mode:soft-light}
+.rung .tier-sweep .ts-band{filter:blur(9px);mix-blend-mode:overlay}
+.rung .tier-sweep .ts-spec{
+  width:92px;left:calc(var(--sx) - var(--ox) + 144px);
+  filter:blur(4px);mix-blend-mode:overlay
+}
+/* Gold: warm */
+.rung.done .ts-lift{background:linear-gradient(90deg,transparent 0%,rgba(255,220,160,.1) 28%,rgba(255,236,200,.22) 50%,rgba(255,220,160,.1) 72%,transparent 100%)}
+.rung.done .ts-band{background:linear-gradient(90deg,transparent 0%,rgba(255,210,140,.08) 22%,rgba(255,236,200,.32) 48%,rgba(255,248,230,.4) 52%,rgba(255,210,140,.1) 76%,transparent 100%)}
+.rung.done .ts-spec{background:linear-gradient(90deg,transparent 0%,rgba(255,245,220,.45) 40%,rgba(255,255,255,.7) 50%,rgba(255,230,180,.3) 62%,transparent 100%)}
+/* Platinum: cool silver */
+.rung.here .ts-lift{background:linear-gradient(90deg,transparent 0%,rgba(220,230,245,.12) 28%,rgba(255,255,255,.22) 50%,rgba(220,230,245,.12) 72%,transparent 100%)}
+.rung.here .ts-band{background:linear-gradient(90deg,transparent 0%,rgba(200,214,230,.1) 22%,rgba(240,246,255,.38) 48%,rgba(255,255,255,.48) 52%,rgba(200,214,230,.1) 76%,transparent 100%)}
+.rung.here .ts-spec{background:linear-gradient(90deg,transparent 0%,rgba(230,240,255,.5) 40%,rgba(255,255,255,.8) 50%,rgba(220,230,245,.3) 62%,transparent 100%)}
+/* Diamond: icy blue */
+.rung.next .ts-lift{background:linear-gradient(90deg,transparent 0%,rgba(160,210,255,.12) 28%,rgba(200,230,255,.24) 50%,rgba(160,210,255,.12) 72%,transparent 100%)}
+.rung.next .ts-band{background:linear-gradient(90deg,transparent 0%,rgba(140,200,255,.1) 22%,rgba(180,220,255,.36) 48%,rgba(230,245,255,.46) 52%,rgba(140,200,255,.1) 76%,transparent 100%)}
+.rung.next .ts-spec{background:linear-gradient(90deg,transparent 0%,rgba(200,230,255,.5) 40%,rgba(255,255,255,.75) 50%,rgba(170,215,255,.32) 62%,transparent 100%)}
 
 /* Tracker fill waits until the module is in view */
 .app .lb-bar .lb-fill{animation:none;width:0}
@@ -540,7 +581,8 @@ html,body{background:#050814}
 .rules-acc .rules-peek{transition:opacity .5s ease}
 
 @media (prefers-reduced-motion:reduce){
-  .tg-mover,.tier-glow{animation:none !important;opacity:0 !important}
+  .tg-mover,.tier-glow,.tier-sweep,.tiers{animation:none !important}
+  .tg-mover,.tier-sweep{opacity:0 !important}
   .app .lb-bar .lb-fill{width:100% !important}
   .app .lb-bar .lb-pill{opacity:1 !important}
   .app .lb-bar .ms i{background:#FFC56A !important;border-color:#FFF3D0 !important;box-shadow:0 0 8px rgba(255,197,106,.9) !important}
@@ -548,9 +590,8 @@ html,body{background:#050814}
 
 html,body{margin:0;background:#050814;overflow-x:hidden}
 body{min-height:100vh}
-.stage{width:100%;overflow:hidden}
 @media (max-width:1439px){
-  .app{transform-origin:top center;transform:scale(var(--fit,1))}
+  .app{transform-origin:top center}
 }
 </style></head><body><div class="app">
     <header class="top ">
@@ -651,22 +692,37 @@ body{min-height:100vh}
     <div class="tiers">
       <div class="tier-glow" aria-hidden="true">
         <div class="tg-mover">
-          <i class="tg-bloom"></i>
+          <i class="tg-lift"></i>
           <i class="tg-band"></i>
-          <i class="tg-core"></i>
+          <i class="tg-spec"></i>
         </div>
       </div>
       <div class="rung done">
+        <i class="tier-sweep" aria-hidden="true">
+          <b class="ts-lift"></b>
+          <b class="ts-band"></b>
+          <b class="ts-spec"></b>
+        </i>
         <i class="node"></i>
         <div class="copy"><div class="name">Gold</div><div class="rng">Average under $7,500</div></div>
         <div class="state">Passed</div>
       </div>
       <div class="rung here">
+        <i class="tier-sweep" aria-hidden="true">
+          <b class="ts-lift"></b>
+          <b class="ts-band"></b>
+          <b class="ts-spec"></b>
+        </i>
         <i class="node"></i>
         <div class="copy"><div class="name">Platinum</div><div class="rng">$7,500 to $19,999 · $11,833 average · $4,333 above the floor · held September-November</div></div>
         <div class="state">You are here</div>
       </div>
       <div class="rung next">
+        <i class="tier-sweep" aria-hidden="true">
+          <b class="ts-lift"></b>
+          <b class="ts-band"></b>
+          <b class="ts-spec"></b>
+        </i>
         <i class="node"></i>
         <div class="copy"><div class="name">Diamond</div><div class="rng">$20,000+ · $8,167 more on the average · or $38,700 November spend</div></div>
         <div class="state">Next</div>
@@ -851,9 +907,10 @@ window.__seekTo = function(ms){
   function fit(){
     var w = document.documentElement.clientWidth || window.innerWidth;
     var s = w < 1440 ? (w/1440) : 1;
-    document.querySelector('.app').style.setProperty('--fit', s);
-    document.querySelector('.app').style.transform = s===1 ? '' : 'scale('+s+')';
-    document.querySelector('.app').style.transformOrigin = 'top center';
+    var app = document.querySelector('.app');
+    if(!app) return;
+    app.style.transform = s===1 ? '' : 'scale('+s+')';
+    app.style.transformOrigin = 'top center';
     document.body.style.minHeight = (1750*s)+'px';
   }
   fit();
