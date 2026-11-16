@@ -1,6 +1,6 @@
 Example data preview. This is unlisted sample/example data only.
 
-Shareable preview (v73 blended rates):
+Shareable preview (v74 blended rates):
 https://htmlpreview.github.io/?https://github.com/nflip23/sm-rewards-preview-hwur72/blob/main/index.html
 
 GitHub Pages is not enabled yet. To use https://nflip23.github.io/sm-rewards-preview-hwur72/ open the repo Settings → Pages → Source: GitHub Actions, then re-run the pages workflow.
